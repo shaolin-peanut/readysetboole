@@ -1,7 +1,7 @@
 
 let gray a =
   let delay = Int32.shift_right a 1 in
-  Int32.logxor a delay;
+  Int32.logxor a delay
   
 (* print utilies below, ignore *)
 
@@ -18,5 +18,4 @@ let test_gray (n: int32) =
   let binary = print_binary n in
   let gray_code = gray n in
   let gray_binary = print_binary gray_code in
-  printf "| %10d | %32s | %32s | %10ld |\n" decimal binary gray_binary gray_code
-  
+  Printf.printf "| %10ld | %32s | %32s | %10ld |\n" decimal binary gray_binary gray_code
