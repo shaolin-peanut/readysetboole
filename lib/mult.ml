@@ -1,7 +1,8 @@
 open Adder
 
 (* replace Int32.sub with your
-    own function for substraction on signed ints *)
+    own function for substraction on signed ints
+    using only boolean operators *)
 
 let mult a b =
   let rec aux a b res =
