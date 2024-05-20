@@ -20,6 +20,13 @@ This project serves multiple purposes for me.
     - I didn't really get this one, saving in case I come back to gray codes https://zerobone.net/blog/cs/gray-codes/
 - 03 Boolean evaluation
     - Time to get into trees !
+    - Input is boolean expression in reverse polish notation (RPN)
+    - pdf recommends starting to build an abstract tree.
+    - I parsed by putting operands and operators in two queues, then processing one operator at a time, and adding each new node at the end of the operands queue.
+        - [ ] make graphic to illustrate
+    - wikipedia goated again
+        - https://en.wikipedia.org/wiki/Reverse_Polish_notation
+        - https://en.wikipedia.org/wiki/Shunting_yard_algorithm
 - ocaml. Not easy to learn when coming from imperative and OOP. Also just lots of quite curious syntax/design decisions, but it has a strong toolkit, big community and plenty ressources. And it's fast like c, and compiles to elf, and has a pretty REPL
     - [This course by Cornell](https://cs3110.github.io/textbook) is pretty good, I would start there and complement with the tutorials/guides/pages on ocaml.org.
     - Start coding simple stuff in the REPL, you can do these [exercises](https://ocaml.org/exercises) and then go hunt for the syntax you need
