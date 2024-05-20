@@ -1,6 +1,8 @@
 open Readysetboole.Adder
 open Readysetboole.Mult
 open Readysetboole.Gray
+open Readysetboole.Ast
+(* open Readysetboole.Astutils *)
 open Printf
 
 let () = 
@@ -39,6 +41,21 @@ let () =
   test_gray 6l;
   test_gray 128l;
   test_gray 255l;
-  printf "+-----+----------+----------+-----+\n"
+  printf "+-----+----------+----------+-----+\n";
+
+
+  printf "\n03 == Boolean evaluation\n";
+  printf "110&| -> %s\n" (boolean_evaluator (str_to_tree "110&|"));
+  printf "01&   -> %s\n" (boolean_evaluator (str_to_tree "01&"));
+  printf "01&1|  -> %s\n" (boolean_evaluator (str_to_tree "01&1|"));
+
+  printf("\ntests from subject.pdf\n");
+  printf "10& -> %s\n" (boolean_evaluator (str_to_tree "10&"));
+  printf "10| -> %s\n" (boolean_evaluator (str_to_tree "10|"));
+  printf "11> -> %s\n" (boolean_evaluator (str_to_tree "11>"));
+  printf "10= -> %s\n" (boolean_evaluator (str_to_tree "10="));
+  printf "1011||= -> %s\n" (boolean_evaluator (str_to_tree "1011||="));
+  
+
 
   
