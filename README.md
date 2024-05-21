@@ -27,6 +27,8 @@ This project serves multiple purposes for me.
     - wikipedia goated again
         - https://en.wikipedia.org/wiki/Reverse_Polish_notation
         - https://en.wikipedia.org/wiki/Shunting_yard_algorithm
+- 04 print truth tables
+    - this is a bit annoying. I have to generate all possible combinations for up to 27 variables, evaluate every possible expression, etc. Not sure how to do this in a simple way
 - ocaml. Not easy to learn when coming from imperative and OOP. Also just lots of quite curious syntax/design decisions, but it has a strong toolkit, big community and plenty ressources. And it's fast like c, and compiles to elf, and has a pretty REPL
     - [This course by Cornell](https://cs3110.github.io/textbook) is pretty good, I would start there and complement with the tutorials/guides/pages on ocaml.org.
     - Start coding simple stuff in the REPL, you can do these [exercises](https://ocaml.org/exercises) and then go hunt for the syntax you need
