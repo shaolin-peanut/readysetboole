@@ -2,6 +2,7 @@ type node =
   | Operator of op * node * node
   | UnaryOperator of op * node
   | Boolean of bool
+  | Var of char
   | Error of string
 
 and op = And | Or | Not | Xor | Cond | Equiv
@@ -10,6 +11,7 @@ and op = And | Or | Not | Xor | Cond | Equiv
 let rec evaluate node = 
   match node with
   | Boolean bool -> bool
+  | Var _ -> raise (Failure "Variables can't be evaluated")
   | Operator (op, left_node, right_node) ->
     let eval_expr =
       let left = evaluate left_node in
@@ -38,6 +40,11 @@ let make_node terms operator =
     let left = Queue.take terms in
     Operator (operator, right, left)
 
+let is_alphabet c =
+  match c with
+  | 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' -> true
+  | _ -> false
+
 let str_to_tree str =
   let operands = Queue.create () in
   let operators = Queue.create () in
@@ -52,7 +59,10 @@ let str_to_tree str =
     | '^' -> Queue.add Xor operators
     | '>' -> Queue.add Cond operators
     | '=' -> Queue.add Equiv operators
-    | _ -> raise (Failure "Invalid Character")
+    |  c ->
+      if is_alphabet c
+        then Queue.add (Var c) operands
+      else raise (Failure "Invalid Character")
   ) str;
 
   while not (Queue.is_empty operators) do
@@ -80,4 +90,5 @@ let str_to_tree str =
       Printf.sprintf "(%s %s %s)" (print_node left) op_str (print_node right)
     | UnaryOperator (_, node) -> Printf.sprintf "(!%s)" (print_node node)
     | Boolean bool -> string_of_bool bool
+    | Var c -> Printf.sprintf "%c" c
     | Error str -> str

@@ -2,6 +2,7 @@ open Readysetboole.Adder
 open Readysetboole.Mult
 open Readysetboole.Gray
 open Readysetboole.Ast
+open Readysetboole.Truthtable
 (* open Readysetboole.Astutils *)
 open Printf
 
@@ -55,7 +56,8 @@ let () =
   printf "11> -> %s\n" (boolean_evaluator (str_to_tree "11>"));
   printf "10= -> %s\n" (boolean_evaluator (str_to_tree "10="));
   printf "1011||= -> %s\n" (boolean_evaluator (str_to_tree "1011||="));
-  
 
+  print_truth_table "BCA!&|";
+  print_truth_table "BAC|!&";
 
   
