@@ -33,4 +33,10 @@ This project serves multiple purposes for me.
     - [This course by Cornell](https://cs3110.github.io/textbook) is pretty good, I would start there and complement with the tutorials/guides/pages on ocaml.org.
     - Start coding simple stuff in the REPL, you can do these [exercises](https://ocaml.org/exercises) and then go hunt for the syntax you need
 
+- to read list. Still not sure if it's relevant or not, so I might remove them later or include above
+    - Some university of waterloo professor is writing these interesting "flaneries", covering one specific topic in depth, often using functional languages (but he also has an intro to c)
+        - coding in racket a program to construct/verify proof statements about programs https://cs.uwaterloo.ca/~plragde/flaneries/LACI/Introduction.html . Might or might not be relevant to this project
+        - functional data structures, in ocaml, will vet and add above if it's good https://cs.uwaterloo.ca/~plragde/flaneries/FDS/
+        - functional introduction to computer science. Altho it uses racket, this covers trees and lists which are more relevant to readysetboole, so might be better https://cs.uwaterloo.ca/~plragde/flaneries/FICS
+
 - [ ] add more, remove unecessary words
