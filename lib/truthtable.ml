@@ -17,6 +17,7 @@ let rec generate_permutations n =
     let tail = generate_permutations (n - 1) in
     List.concat (List.map (fun l -> [true::l;false::l]) tail)
 
+
 let rec expand_values ast env =
   match ast with
   | Var v -> Boolean (List.assoc v env)
@@ -25,28 +26,30 @@ let rec expand_values ast env =
       let one = expand_values child env in
       UnaryOperator (op, one)
   | Operator (op, l, r) ->
-      let right = expand_values l env in 
-      let left = expand_values r env in
+      let right = expand_values l env
+      and left = expand_values r env in
       Operator (op, left, right)
   | _ -> raise (Failure "expansion error")
 
 
+let eval_and_print formula ast (maps: (char * bool) list list) =
+  List.iter (fun (var, _) -> Printf.printf "| %c " var) (List.nth maps 0);
+  Printf.printf "|\"%s\"\n" formula;
+  Printf.printf "|%s|" (String.make ((List.length maps) * 2 + 9) '-') ;
+  Printf.printf "\n";
+
+  List.iter (fun map ->
+    List.iter (fun (_, value) -> Printf.printf "| %d " (Bool.to_int value)) map;
+    let expanded_ast = expand_values ast map in
+    let expr_result = evaluate expanded_ast in
+    Printf.printf "| %d |\n" (Bool.to_int expr_result);
+  ) maps;
+  Printf.printf "|%s|\n" (String.make ((List.length maps) * 2 + 9) '-')
+  
 
 let print_truth_table formula =
   let ast = str_to_tree formula in
   let vars = get_variables ast in
   let permutations = generate_permutations (List.length vars) in
-
-  List.iter (Printf.printf "| %c " ) vars;
-  Printf.printf " | = |\n";
-  Printf.printf "|%s|" (String.make ((List.length vars) * 2 + 10) '-') ;
-  Printf.printf "\n";
-
-  List.iter (fun permutation ->
-    print_string "|";
-    let var_map = List.combine vars permutation in
-    let expanded_ast = expand_values ast var_map in
-    List.iter (fun b -> Printf.printf " %d  " (Bool.to_int b)) permutation;
-    Printf.printf "| %d |\n" (Bool.to_int (evaluate expanded_ast))
-  ) permutations;
-  Printf.printf "|%s|\n" (String.make ((List.length vars) * 2 + 10) '-') ;
+  let maps = (List.map (fun permutation -> List.combine vars permutation) permutations) in
+  eval_and_print formula ast maps;
