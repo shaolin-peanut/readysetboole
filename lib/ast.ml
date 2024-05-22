@@ -42,7 +42,7 @@ let make_node terms operator =
 
 let is_alphabet c =
   match c with
-  | 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' -> true
+  | 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I' | 'J' | 'K' | 'L' | 'M' | 'N' | 'O' | 'P' | 'Q' | 'R' | 'V' | 'W' | 'X' | 'Y' | 'Z' -> true
   | _ -> false
 
 let str_to_tree str =

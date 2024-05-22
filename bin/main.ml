@@ -59,5 +59,6 @@ let () =
 
   print_truth_table "BCA!&|";
   print_truth_table "BAC|!&";
+  print_truth_table "XF&A|"
 
   
