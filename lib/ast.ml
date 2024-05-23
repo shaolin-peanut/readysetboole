@@ -67,8 +67,7 @@ let str_to_tree formula =
       let left = Stack.pop operands in
       let op = List.assoc c char_to_operator in
       Stack.push (Operator (op, left, right)) operands
-    (* | '&' | '|' | '^' | '>' | '=' -> match chars with node type Operator And|Or|Xor|Cond|Equiv, Stack.push Operator (op, (Stack.pop operands), (Stack.pop operands)) operands *)
-    | c when is_alphabet c -> (Stack.push (Var c) operands)
+    | c when is_alphabet c -> Stack.push (Var c) operands
     | _ -> raise (Failure "Invalid")
   ) formula;
 
