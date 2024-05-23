@@ -27,5 +27,5 @@ let rec ast_to_rpn node =
   | Error msg -> raise (Failure msg)
 
 let () =
-  let ast = str_to_tree "10&" in
+  let ast = str_to_tree "10&1|" in
   ast_to_rpn ast |> print_endline;
