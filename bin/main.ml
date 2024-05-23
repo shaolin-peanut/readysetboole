@@ -3,7 +3,7 @@ open Readysetboole.Mult
 open Readysetboole.Gray
 open Readysetboole.Ast
 open Readysetboole.Truthtable
-(* open Readysetboole.Astutils *)
+open Readysetboole.Nnf
 open Printf
 
 let () = 
@@ -59,6 +59,9 @@ let () =
 
   print_truth_table "BCA!&|";
   print_truth_table "BAC|!&";
-  print_truth_table "XF&A|"
+  print_truth_table "XF&A|";
+
+  let ast = str_to_tree "110&|" in
+  ast_to_rpn ast |> print_endline;
 
   
