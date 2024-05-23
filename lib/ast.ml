@@ -1,3 +1,9 @@
+(* type characters =
+  | Lead of char
+  | Second of string
+
+type array = int * string *)
+
 type node =
   | Operator of op * node * node
   | UnaryOperator of op * node
@@ -5,8 +11,8 @@ type node =
   | Var of char
   | Error of string
 
-and op = And | Or | Not | Xor | Cond | Equiv
-
+and op = And| Or | Not | Xor | Cond | Equiv
+(* and op = '&' | '|' | ' *)
 
 let rec evaluate node = 
   match node with
@@ -30,7 +36,7 @@ let rec evaluate node =
 let boolean_evaluator node =
   if (evaluate node) then "true" else "false"
 
-let make_node terms operator =
+(* let make_node terms operator =
   match operator with
   | Not ->
     let term = Queue.take terms in
@@ -38,14 +44,14 @@ let make_node terms operator =
   | And | Or | Xor | Cond | Equiv ->
     let right = Queue.take terms in
     let left = Queue.take terms in
-    Operator (operator, right, left)
+    Operator (operator, right, left) *)
 
 let is_alphabet c =
   match c with
   | 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I' | 'J' | 'K' | 'L' | 'M' | 'N' | 'O' | 'P' | 'Q' | 'R' | 'V' | 'W' | 'X' | 'Y' | 'Z' -> true
   | _ -> false
 
-let char_to_operator = [
+let op_of_char = [
   ('&', And);
   ('|', Or);
   ('^', Xor);
@@ -60,13 +66,12 @@ let str_to_tree formula =
     match token with
     | '1' -> Stack.push (Boolean true) operands
     | '0' -> Stack.push (Boolean false) operands
-    | '!' ->
-      let child = Stack.pop operands in Stack.push (UnaryOperator (Not, child)) operands
-    | c when List.mem_assoc c char_to_operator ->
-      let right = Stack.pop operands in
-      let left = Stack.pop operands in
-      let op = List.assoc c char_to_operator in
-      Stack.push (Operator (op, left, right)) operands
+    | '!' -> let child = Stack.pop operands in
+        Stack.push (UnaryOperator (Not, child)) operands
+    | c when List.mem_assoc c op_of_char ->
+      let r, l = Stack.pop operands, Stack.pop operands in
+      let node = Operator (List.assoc c op_of_char, r, l)
+      in Stack.push node operands
     | c when is_alphabet c -> Stack.push (Var c) operands
     | _ -> raise (Failure "Invalid")
   ) formula;

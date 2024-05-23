@@ -60,17 +60,13 @@ let () =
   print_truth_table "BCA!&|";
   print_truth_table "BAC|!&";
   print_truth_table "XF&A|";
-
-  print_string "101&| -> ";
-  let ast = str_to_tree "101&|" in
-  ast_to_rpn ast |> print_endline;
-
-  print_string "10&1| -> ";
-  let ast = str_to_tree "10&1|" in
-  ast_to_rpn ast |> print_endline;
-
-  print_string "1011||= -> ";
-  let ast = str_to_tree "1011||=" in
-  ast_to_rpn ast |> print_endline;
+  
+  (* let x = (nnf "1011||=") in
+  print_endline @@ nnf x; *)
+  nnf "AB&!";
+  nnf "AB|!";
+  nnf "AB>";
+  nnf "AB=";
+  nnf "AB|C&!";
 
   
