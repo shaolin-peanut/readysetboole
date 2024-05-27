@@ -9,16 +9,16 @@ This project serves multiple purposes for me.
 3. Discovering set theory.
 
 ## Ressources I found on the way, some useful, some just interesting
-- 00 adder and 01 multiplier
+0. adder and 01 multiplier
     - doing module 00 and 01 of nand2tetris.org helped me get an intuition for how logic gates work, and easily understand how to do addition with only boolean operators
     - https://en.wikipedia.org/wiki/Binary_multiplier
     - https://en.wikipedia.org/wiki/Bitwise_operation
     - https://en.wikipedia.org/wiki/Bit_manipulation
-- 02 Gray code a.k.a reflected binary code (RBC or RB)
+2. Gray code a.k.a reflected binary code (RBC or RB)
     - This seems very confusing at first, but once again [wikipedia saves the day](https://en.wikipedia.org/wiki/Gray_code)
     - llama with groq inference has an [interesting explanation](https://poe.com/s/iRiSTKUMqsMogBzanFU1) for it
     - I didn't really get this one, saving in case I come back to gray codes https://zerobone.net/blog/cs/gray-codes/
-- 03 Boolean evaluation
+3. Boolean evaluation
     - Time to get into trees !
     - Input is boolean expression in reverse polish notation (RPN)
     - pdf recommends starting to build an abstract tree.
@@ -31,14 +31,14 @@ This project serves multiple purposes for me.
     - wikipedia goated again
         - https://en.wikipedia.org/wiki/Reverse_Polish_notation
         - https://en.wikipedia.org/wiki/Shunting_yard_algorithm
-- 04 print truth tables
+4. print truth tables
     - this is a bit annoying. I have to generate all possible combinations for up to 27 variables, evaluate every possible expression, etc. Not sure how to do this in a simple way
-- 05 negation normal form (NNF)
+5. negation normal form (NNF)
     - for this one you have to convert the ast back to RPN
     - then it's a pretty simple procedure, you have to recursively
         - remove all double negation
         - apply de morgan laws
-- 06 conjunctive normal form (CNF)
+6. conjunctive normal form (CNF)
     - not sure how yet
 - ocaml. Not easy to learn when coming from imperative and OOP. Also just lots of quite curious syntax/design decisions, but it has a strong toolkit, big community and plenty ressources. And it's fast like c, and compiles to elf, and has a pretty REPL
     - [This course by Cornell](https://cs3110.github.io/textbook) is pretty good, I would start there and complement with the tutorials/guides/pages on ocaml.org.
