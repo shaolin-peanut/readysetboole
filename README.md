@@ -23,12 +23,23 @@ This project serves multiple purposes for me.
     - Input is boolean expression in reverse polish notation (RPN)
     - pdf recommends starting to build an abstract tree.
     - I parsed by putting operands and operators in two queues, then processing one operator at a time, and adding each new node at the end of the operands queue.
-        - [ ] make graphic to illustrate
+        - That approach actually led to a wrong AST, the solution was even simpler.
+            1. loop over the string, put operands in a stack
+            2. as soon as you encounter an operator, take out 1 (unary operator, like NOT) or 2 operands from the stack, make a node (operator with two operands) and put this node back on the stack
+            3. continue looping until end of string
+            4. if stack has more than one operand, the expression is invalid. Else, take the operand out, which is now the root node of the tree
     - wikipedia goated again
         - https://en.wikipedia.org/wiki/Reverse_Polish_notation
         - https://en.wikipedia.org/wiki/Shunting_yard_algorithm
 - 04 print truth tables
     - this is a bit annoying. I have to generate all possible combinations for up to 27 variables, evaluate every possible expression, etc. Not sure how to do this in a simple way
+- 05 negation normal form (NNF)
+    - for this one you have to convert the ast back to RPN
+    - then it's a pretty simple procedure, you have to recursively
+        - remove all double negation
+        - apply de morgan laws
+- 06 conjunctive normal form (CNF)
+    - not sure how yet
 - ocaml. Not easy to learn when coming from imperative and OOP. Also just lots of quite curious syntax/design decisions, but it has a strong toolkit, big community and plenty ressources. And it's fast like c, and compiles to elf, and has a pretty REPL
     - [This course by Cornell](https://cs3110.github.io/textbook) is pretty good, I would start there and complement with the tutorials/guides/pages on ocaml.org.
     - Start coding simple stuff in the REPL, you can do these [exercises](https://ocaml.org/exercises) and then go hunt for the syntax you need
