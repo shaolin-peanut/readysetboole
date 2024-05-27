@@ -9,13 +9,10 @@ open Printf
 let () = 
   
   printf "00 === ADDER\n";
-  let add_two_numbers = adder 42l 42l in
-  let num_plus_zero = adder 42l 0l in
-  let only_zero = adder 0l 0l in
 
-  printf "Sum of 42l and 42l: %ld\n" add_two_numbers;
-  printf "Sum of 42l and 0l: %ld\n" num_plus_zero;
-  printf "Sum of 0l and 0l: %ld\n" only_zero;
+  printf "Sum of 42l and 42l: %ld\n" @@ adder 42l 42l;
+  printf "Sum of 42l and 0l: %ld\n" @@ adder 42l 0l;
+  printf "Sum of 0l and 0l: %ld\n" @@ adder 0l 0l;
   printf "\n";
 
   printf "01 === MULTIPLIER\n";
