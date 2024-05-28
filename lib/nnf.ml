@@ -1,13 +1,5 @@
 open Ast
-(* 
-let is_double_neg = function
-  | UnaryOperator (_, (c))  ->
-    c |> (fun node ->
-      match node with
-      | UnaryOperator (_, _) -> true
-      | _ -> false)
-  | _ -> false *)
-(* the above is wildly inefficient, here's a more idiomatic way *)
+
 let is_double_neg = function
   | UnaryOperator (Not, UnaryOperator (Not, _)) -> true
   | _ -> false

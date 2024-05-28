@@ -36,10 +36,6 @@ let eval_and_print formula ast (maps: (char * bool) list list) =
   List.iter (fun (var, _) -> Printf.printf "| %c " var) (List.nth maps 0);
   Printf.printf "|\"%s\"\n" formula;
   Printf.printf "|%s|" @@ String.make ((List.length maps) * 2) '-' ;
-  (* I'm using the reverse application operator here |>
-     see it as a pipe in c where output becomes input of the next function
-     The function commented-out above is the regular version of the same expression *)
-  (* Printf.printf "|\"s\"\n" @@ List.length maps |> fun x -> x * 2 |> String.make x '-' |> *)
   Printf.printf "\n";
 
   List.iter (fun map ->
