@@ -16,18 +16,12 @@ let () =
   printf "\n";
 
   printf "01 === MULTIPLIER\n";
-  let mult_two_nums = mult 5l 5l in
-  let mult_a_one = mult 1l 5l in
-  let mult_b_one = mult 5l 1l in
-  let mult_a_zero = mult 0l 5l in
-  let mult_b_zero = mult 5l 0l in
-  let mult_all_zero = mult 0l 0l in
-  printf "Product of 5 * 5: %ld\n" mult_two_nums;
-  printf "Product of 5 * 0: %ld\n" mult_b_zero;
-  printf "Product of 0 * 5: %ld\n" mult_a_zero;
-  printf "Product of 0 * 0: %ld\n" mult_all_zero;
-  printf "Product of 5 * 1: %ld\n" mult_b_one;
-  printf "Product of 1 * 5: %ld\n\n" mult_a_one;
+  printf "Product of 5 * 5: %ld\n"  @@ mult 5l 5l;
+  printf "Product of 5 * 0: %ld\n" @@ mult 5l 0l;
+  printf "Product of 0 * 5: %ld\n" @@ mult 0l 5l;
+  printf "Product of 0 * 0: %ld\n" @@ mult 0l 0l;
+  printf "Product of 5 * 1: %ld\n" @@ mult 5l 1l;
+  printf "Product of 1 * 5: %ld\n\n" @@ mult 1l 5l ;
 
   printf "02 === GRAY CODES\n";
   printf "+-----+----------+----------+-----+\n";
@@ -43,23 +37,21 @@ let () =
 
 
   printf "\n03 == Boolean evaluation\n";
-  printf "110&| -> %s\n" (boolean_evaluator (str_to_tree "110&|"));
-  printf "01&   -> %s\n" (boolean_evaluator (str_to_tree "01&"));
-  printf "01&1|  -> %s\n" (boolean_evaluator (str_to_tree "01&1|"));
+  boolean_evaluator "110&|";
+  boolean_evaluator "01&";
+  boolean_evaluator "01&1|";
 
   printf("\ntests from subject.pdf\n");
-  printf "10& -> %s\n" (boolean_evaluator (str_to_tree "10&"));
-  printf "10| -> %s\n" (boolean_evaluator (str_to_tree "10|"));
-  printf "11> -> %s\n" (boolean_evaluator (str_to_tree "11>"));
-  printf "10= -> %s\n" (boolean_evaluator (str_to_tree "10="));
-  printf "1011||= -> %s\n" (boolean_evaluator (str_to_tree "1011||="));
+  boolean_evaluator "10&";
+  boolean_evaluator "10|";
+  boolean_evaluator "11>";
+  boolean_evaluator "10=";
+  boolean_evaluator "1011||=";
 
   print_truth_table "BCA!&|";
   print_truth_table "BAC|!&";
   print_truth_table "XF&A|";
   
-  (* let x = (nnf "1011||=") in
-  print_endline @@ nnf x; *)
   nnf "AB&!";
   nnf "AB|!";
   nnf "AB>";
