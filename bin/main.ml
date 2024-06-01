@@ -4,6 +4,7 @@ open Readysetboole.Gray
 open Readysetboole.Ast
 open Readysetboole.Truthtable
 open Readysetboole.Nnf
+open Readysetboole.Cnf
 open Printf
 
 let () = 
@@ -60,6 +61,8 @@ let () =
   print_truth_table "BCA!&|";
   print_truth_table "BAC|!&";
   print_truth_table "XF&A|";
+  (* test a logical expression in RPN with a lot more variables *)
+  (* print_truth_table "ABCD&|X&Y&Z&|"; *)
   
   (* let x = (nnf "1011||=") in
   print_endline @@ nnf x; *)
@@ -68,5 +71,19 @@ let () =
   nnf "AB>";
   nnf "AB=";
   nnf "AB|C&!";
+
+  print_endline "CNF tests:";
+  cnf "AB&!";
+  cnf "AB|!";
+  cnf "AB|C&";
+  (* cnf "AB|C|D";
+  cnf "AB&C&D&";
+  cnf "AB&!C!";
+  cnf "AB|!C!&"; *)
+  (* auto test *)
+  (* cnf "AB|C&D";
+  cnf "AB|C&D|E";
+  cnf "AB|C&D|E&F"; *)
+
 
   

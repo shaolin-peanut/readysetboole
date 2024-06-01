@@ -1,18 +1,14 @@
 open Ast
-(* 
-let is_double_neg = function
-  | UnaryOperator (_, (c))  ->
-    c |> (fun node ->
-      match node with
-      | UnaryOperator (_, _) -> true
-      | _ -> false)
-  | _ -> false *)
-(* the above is wildly inefficient, here's a more idiomatic way *)
-let is_double_neg = function
-  | UnaryOperator (Not, UnaryOperator (Not, _)) -> true
-  | _ -> false
 
 let neg node = UnaryOperator (Not, node)
+
+let rec double_negation node =
+  match node with
+  | UnaryOperator (Not, UnaryOperator (Not, child)) -> double_negation child
+  | UnaryOperator (Not, Boolean b) when b = false -> Boolean true
+  | UnaryOperator (Not, child) -> UnaryOperator (Not, double_negation child)
+  | Operator (op, l, r) -> Operator (op, double_negation l, double_negation r)
+  | _ -> node
 
 let rec elim_equiv_cond node =
   match node with
@@ -62,15 +58,15 @@ let rec fixpoint f node =
   let node' = f node in
   if node = node' then node else fixpoint f node'
 
+let ast_to_nnf tree =
+  fixpoint double_negation tree
+  |> fixpoint elim_equiv_cond
+  |> fixpoint de_morgan
+
 let nnf formula =
   Printf.printf "%s -> " formula;
   str_to_tree formula
-  |> fixpoint elim_equiv_cond
-  |> fixpoint de_morgan
+  |> ast_to_nnf
   |> ast_to_rpn
   |> print_endline
 
-
-(* let () = *)
-  (* let ast = str_to_tree "10&1|" in
-  ast_to_rpn ast |> print_endline; *)

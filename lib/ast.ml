@@ -36,16 +36,6 @@ let rec evaluate node =
 let boolean_evaluator node =
   if (evaluate node) then "true" else "false"
 
-(* let make_node terms operator =
-  match operator with
-  | Not ->
-    let term = Queue.take terms in
-    UnaryOperator (operator, term)
-  | And | Or | Xor | Cond | Equiv ->
-    let right = Queue.take terms in
-    let left = Queue.take terms in
-    Operator (operator, right, left) *)
-
 let is_alphabet c =
   match c with
   | 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I' | 'J' | 'K' | 'L' | 'M' | 'N' | 'O' | 'P' | 'Q' | 'R' | 'V' | 'W' | 'X' | 'Y' | 'Z' -> true
