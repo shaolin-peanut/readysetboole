@@ -1,9 +1,3 @@
-(* type characters =
-  | Lead of char
-  | Second of string
-
-type array = int * string *)
-
 type node =
   | Operator of op * node * node
   | UnaryOperator of op * node
@@ -70,3 +64,9 @@ let str_to_tree formula =
     Stack.pop operands
   else
     raise (Failure "Invalid formula")
+
+let boolean_evaluator formula =
+  str_to_tree formula
+  |>  evaluate
+  |> (fun x -> if x then "true" else "false")
+  |> Printf.printf "%s -> %s\n" formula
