@@ -26,10 +26,6 @@ let rec evaluate node =
     in eval_expr
   | UnaryOperator (_, term) -> not (evaluate term)
   | Error _ -> false
-  
-let boolean_evaluator node =
-  if (evaluate node) then "true" else "false"
-
 let is_alphabet c =
   match c with
   | 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I' | 'J' | 'K' | 'L' | 'M' | 'N' | 'O' | 'P' | 'Q' | 'R' | 'V' | 'W' | 'X' | 'Y' | 'Z' -> true
