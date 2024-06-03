@@ -39,7 +39,33 @@ This project serves multiple purposes for me.
         - remove all double negation
         - apply de morgan laws
 6. conjunctive normal form (CNF)
-    - not sure how yet
+    - this is pretty straightforward, basically normal negation form already brings us quite close to the result, all we need to do is use the distribute rule I think.
+        - Every time you find an OR containing AND and literal, you do this
+            - given mynode = Operator (Or, myliteral, Operator(And, left, right))
+            - You create newnode = Operator (And, Operator(Or, left, myliteral), Operator(Or, myliteral, right))
+    - you also need to apply identity and zero laws
+        - the laws are simple, but I'm still a little as to their application depending on if we want CNF or DNF (disjunctive normal form), and why it has to be different
+        - identity law
+            - p | false = p
+            - p & true = p
+        - zero law
+            - p | true = true
+            - p & false = false
+7. SAT
+    - Now this is trickier than before. A SAT solver, given a boolean expression/function, aims to find if there is one combination of input variables where the output of the expression is true. You could check with a truth table, but computing all the permutations increases exponentially with the numbers of variables to compute
+    - The simplest algorithm to implement is DPLL, most modern solvers are based on or derived from it
+        - it's based on backtracking but adds unit propagation and pure literal elimination
+        - Unit propagation is a lot of fancy words for something simple
+            - remember SAT solvers are fed CNF formulas, so we are starting from a conjunction of disjunctions. Every cnf formula looks a bit like this (A OR B) AND (B OR C) AND (NOT C OR A) AND (B) etc etc
+            - a clause is what's around the AND operators. It either contains an OR operator with two operands or a single literal.
+            - Unit propagation is looking for all those single literals, calling them "Unit Clauses", to simplify the entire formula, because a single literal is assumed to be true (to be satisfiable with all those AND statements around)
+            - Once it found a single literal, it applies two rules.
+                1. every clause containing the literal is removed, because it must true if you do SOMETHING OR (true literal)
+                2. every clause with the negation of the literal, removes the negated literal. (A OR ~L) becomes (A)
+                - And then we recursively repeat, since one pass at unit propagation might create new unit clauses
+        - pure literal elimination
+            - if there's literals with no polarity, a.k.a a variable that is either always positive or always negative when it appears in the expresssion, then you can remove it from the entire expression
+                - again tricky to understand why that's valid, but I solved it (check lib/sat.ml if curious)
 - ocaml. Not easy to learn when coming from imperative and OOP. Also just lots of quite curious syntax/design decisions, but it has a strong toolkit, big community and plenty ressources. And it's fast like c, and compiles to elf, and has a pretty REPL
     - [This course by Cornell](https://cs3110.github.io/textbook) is pretty good, I would start there and complement with the tutorials/guides/pages on ocaml.org.
     - Start coding simple stuff in the REPL, you can do these [exercises](https://ocaml.org/exercises) and then go hunt for the syntax you need
