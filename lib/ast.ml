@@ -4,9 +4,9 @@ type node =
   | Boolean of bool
   | Var of char
   | Error of string
+  | EmptyClause
 
 and op = And| Or | Not | Xor | Cond | Equiv
-(* and op = '&' | '|' | ' *)
 
 let rec evaluate node = 
   match node with
@@ -25,7 +25,7 @@ let rec evaluate node =
       | _ -> false
     in eval_expr
   | UnaryOperator (_, term) -> not (evaluate term)
-  | Error _ -> false
+  | _ -> false
 let is_alphabet c =
   match c with
   | 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I' | 'J' | 'K' | 'L' | 'M' | 'N' | 'O' | 'P' | 'Q' | 'R' | 'V' | 'W' | 'X' | 'Y' | 'Z' -> true

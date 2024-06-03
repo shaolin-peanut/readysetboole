@@ -53,6 +53,7 @@ let rec ast_to_rpn node =
   | Var v -> Printf.sprintf "%c" v
   | Boolean b -> if b then "1" else "0"
   | Error msg -> raise (Failure msg)
+  | _ -> ""
 
 let rec fixpoint f node =
   let node' = f node in
