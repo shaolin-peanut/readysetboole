@@ -1,14 +1,20 @@
-open Ast
 (* open Nnf *)
 (* open Cnf *)
 (* open Truthtable *)
+open Ast
 
-(* seems unreadable but basically
-   if the variable is positive, I check if there's a negative counterpart
-   in the variables list
-   if the it's negative, I check if there's a positive counterpart
-  if there is one of those, it's a pure variable and I should return the other operand of OR
-    and remove the pure literal *)
+type assignment = (char * bool)
+
+let rec contains_unsat = function
+  | [] -> false
+  | hd :: _ when hd = Status UNSAT -> true
+  | _ :: tl -> contains_unsat tl
+
+let rec all_sat = function
+  | [] -> true
+  | hd :: _ when hd = Status UNSAT -> false
+  | hd :: tl when hd = Status SAT -> all_sat tl
+  | _ -> false
 
 let pure_literal_elim literals clauses =
   List.map (fun clause ->
@@ -50,36 +56,74 @@ let rec propagate v clauses =
   | [] -> []
   | clause :: rest ->
     match clause with
-    | Operator (Or, UnaryOperator (Not, v), other) -> [other] :: propagate v rest
+      | Operator (Or, UnaryOperator (Not, v), other) -> [other] :: propagate v rest
       | Operator (Or, Var v, _) -> propagate (Var v) rest
       | _ -> [clause] :: propagate v rest
 
-let rec unit_propagation clauses =
+(* unit clauses have only a variable (
+   it's a bit annoying to deal with because of how i'm
+   handling the not operator) *)
+let rec unit_propagation clauses units =
   match clauses with
   | [] -> []
   | clause :: rest ->
     match clause with
-    | Var v -> [clause] :: propagate (Var v) rest
-    | UnaryOperator (_, _)-> [clause] :: propagate clause rest
+    | Var v -> [clause] :: propagate (Var v) clauses
+    | UnaryOperator (_, _)-> [clause] :: propagate clause clauses
     | _ -> [clause] :: unit_propagation rest
 
-let simplify clauses variables =
-  let propagated = unit_propagation clauses in
-  pure_literal_elim variables propagated
-
-(* let rec dpll clauses variables =
+let rec get_unit_clauses clauses acc =
   match clauses with
-  (* empty close, unsat *)
-  | [] -> Error "unsat"
-  | _ ->
-    match variables with
-    | [] -> Error "sat"
+  | [] -> acc
+  | clause :: rest ->
+    match clause with
+    | Var v ->  get_unit_clauses rest ([Var v] :: acc)
+    | UnaryOperator (_, v) -> get_unit_clauses rest ([UnaryOperator(Not, v)] :: acc)
     | _ ->
-      let new_clauses, new_variables =
-  simplify clauses variables *)
 
-  (* if tree is empty, return true *)
+let rec assoc_look k = function
+  | [] -> None
+  | (k', v) :: tl -> if k = k' then Some v else assoc_look k tl
 
+let rec delete_k k acc =
+  match acc with
+  | [] -> []
+  | hd :: tail -> if hd = k then delete_k k tail else delete_k k acc 
+
+let rec update_assign assignement units =
+  List.iter (fun unit ->
+    match unit with
+      | [Var v] :: tl ->  
+      | [UnaryOperator (_, v)] || tl -> 
+      | [] | _ -> 
+     | [Var v] :: tl -> 
+  ) units;
+
+(* simplify happens at the beginning of dpll, before the recursive calls
+   it does unit propagation and pure literal elimination 
+   recursively on the whole list *)
+(* let simplify clauses variables =
+  let propagated = unit_propagation clauses in
+  pure_literal_elim variables propagated *)
+
+(* let rec simplify clauses var value =
+  match clauses with
+  | [] -> []
+  | Operator(Or, left, _) when left = var :: tail -> *)
+
+let rec dpll clauses assignment =
+  if contains_unsat clauses then UNSAT else
+  if all_sat clauses then SAT else
+  let units = get_unit_clauses clauses [] in
+  let assignment2 = update_assign units in
+  let propagated = unit_propagation clauses units in
+  (* match clauses with
+  | _ :: _ when contains_unsat clauses -> UNSAT
+  | _ :: _ when all_sat clauses -> SAT *)
+
+  (* splitting *)
+  (* if contains_unsat clauses then UNSAT
+  elif all_sat clauses then SAT *)
 
 (* let sat formula =
   let tree = nnf_to_cnf @@ ast_to_nnf @@ str_to_ast formula in

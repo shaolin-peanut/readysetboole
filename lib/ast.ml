@@ -4,9 +4,11 @@ type node =
   | Boolean of bool
   | Var of char
   | Error of string
-  | EmptyClause
+  | Status of status
 
 and op = And| Or | Not | Xor | Cond | Equiv
+
+and status = SAT | UNSAT
 
 let rec evaluate node = 
   match node with
