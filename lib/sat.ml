@@ -16,7 +16,7 @@ let rec all_sat = function
   | hd :: tl when hd = Status SAT -> all_sat tl
   | _ -> false
 
-let pure_literal_elim literals clauses =
+(* let pure_literal_elim literals clauses =
   List.map (fun clause ->
     match clause with
     | Operator (Or, Var v, other) ->
@@ -44,12 +44,12 @@ let rec get_literals ast =
     let l = get_literals left in
     let r = get_literals right in
     List.sort_uniq compare (l @ r)
-    | _ -> []
+    | _ -> [] *)
 
-let cnf_to_clauses tree =
+let rec cnf_to_clauses tree =
   match tree with
-  | Operator (And, left, right) -> [left; right]
-  | _ -> [tree]
+  | Operator (And, left, right) :: tl -> (left, right) :: cnf_to_clauses tl 
+  | _ -> []
 
 let rec propagate v clauses =
   match clauses with
@@ -60,18 +60,15 @@ let rec propagate v clauses =
       | Operator (Or, Var v, _) -> propagate (Var v) rest
       | _ -> [clause] :: propagate v rest
 
-(* unit clauses have only a variable (
-   it's a bit annoying to deal with because of how i'm
-   handling the not operator) *)
-let rec unit_propagation clauses units =
+(* let rec unit_propagation clauses units =
   match clauses with
   | [] -> []
   | clause :: rest ->
     match clause with
     | Var v -> [clause] :: propagate (Var v) clauses
     | UnaryOperator (_, _)-> [clause] :: propagate clause clauses
-    | _ -> [clause] :: unit_propagation rest
-
+    | _ -> [clause] :: unit_propagation rest *)
+(* 
 let rec get_unit_clauses clauses acc =
   match clauses with
   | [] -> acc
@@ -79,44 +76,57 @@ let rec get_unit_clauses clauses acc =
     match clause with
     | Var v ->  get_unit_clauses rest ([Var v] :: acc)
     | UnaryOperator (_, v) -> get_unit_clauses rest ([UnaryOperator(Not, v)] :: acc)
-    | _ ->
+    | _ -> get_unit_clauses clauses acc *)
 
-let rec assoc_look k = function
-  | [] -> None
-  | (k', v) :: tl -> if k = k' then Some v else assoc_look k tl
-
+(* let rec delete_k (k : char) (acc : (char * bool) list) : (char * bool) list = *)
 let rec delete_k k acc =
   match acc with
   | [] -> []
-  | hd :: tail -> if hd = k then delete_k k tail else delete_k k acc 
+  | (k', _) :: tl when k' = k -> tl
+  | hd :: tl -> hd :: delete_k k tl
 
-let rec update_assign assignement units =
-  List.iter (fun unit ->
+let rec assoc_look (k : 'a) (lst : ('a * 'b) list) : 'b option =
+  match lst with
+  | [] -> None
+  | (k', v) :: tl -> 
+    if k = k' then Some v
+    else assoc_look k tl
+
+let assign (k : 'a) (v : 'b) (lst : ('a * 'b) list) : ('a * 'b) list =
+  (k, v) :: lst
+
+let rec update_assign (assignment : (char * bool) list) (units : node list)
+  List.fold_left (fun acc unit ->
     match unit with
-      | [Var v] :: tl ->  
-      | [UnaryOperator (_, v)] || tl -> 
-      | [] | _ -> 
-     | [Var v] :: tl -> 
-  ) units;
+    | Var v -> (v, true) :: delete v assignment
+    | UnaryOperator(_, Var v) -> (v, false) :: delete v assignment
+    | _ -> acc
+  ) assignment units
+  (*  List.iter( fun unit ->
+    let update = delete_k unit assignment in
+    match unit with 
+    | Var v -> (v, true)
+    | UnaryOperator (_, Var v) -> (v, false)
+  ) units *)
 
-(* simplify happens at the beginning of dpll, before the recursive calls
-   it does unit propagation and pure literal elimination 
-   recursively on the whole list *)
-(* let simplify clauses variables =
-  let propagated = unit_propagation clauses in
-  pure_literal_elim variables propagated *)
 
-(* let rec simplify clauses var value =
-  match clauses with
-  | [] -> []
-  | Operator(Or, left, _) when left = var :: tail -> *)
-
+(* something's wrong here, need to to learn more about list manipulation *)
+(* https://cs3110.github.io/textbook/chapters/hop/fold.html *)
+(* let rec update_assign (assignment: (char * bool) list) (units : node list) =
+  List.fold_left (fun acc unit ->
+    let assignment' = delete_k unit acc in
+    match unit with
+    | Var v -> (v, true) :: assignment'
+    | UnaryOperator(_, Var v) -> (v , false) :: assignment'
+    | _ -> acc
+  ) assignment units *)
+(* 
 let rec dpll clauses assignment =
   if contains_unsat clauses then UNSAT else
   if all_sat clauses then SAT else
   let units = get_unit_clauses clauses [] in
-  let assignment2 = update_assign units in
-  let propagated = unit_propagation clauses units in
+  let assignment2 = update_assign assignment units in
+  let propagated = unit_propagation clauses units in *)
   (* match clauses with
   | _ :: _ when contains_unsat clauses -> UNSAT
   | _ :: _ when all_sat clauses -> SAT *)
