@@ -41,7 +41,9 @@ let combine_clauses clauses1 clauses2 =
 (* write a function that turns all the operands of
     nested ORs in a list, there must be a simple way*)
 
-let rec cnf_to_clauses tree =
+(* ==== attempt to do nSAT instead of 2SAT only *)
+
+(* let rec cnf_to_clauses tree =
   match tree with
   | Var v -> [[Var v]]
   | UnaryOperator (Not, Var v) -> [[UnaryOperator (Not, Var v)]]
@@ -61,18 +63,14 @@ let example_tree =
     Operator (Or, Var 'C', Var 'D')
   )
 
-let clauses = cnf_to_clauses example_tree
-  
-(* let rec cnf_to_clause tree =
+let clauses = cnf_to_clauses example_tree *)
+
+(* ======= *)
+(* 
+let rec cnf_to_clauses tree =
   match tree with
-  | Operator (And, Or l, Var r) -> [l; r]
-  | Operator (And, Var l, r) -> l :: cnf_to_clause r
-  | Operator (And, l, Var r) -> r :: cnf_to_clause l
-  | Operator (Or)
-  | _ -> [] *)
-(* let rec cnf_to_clauses tree =
-  match tree with
-  | Operator (And, Var left, Var right) :: tl -> [left;right] :: cnf_to_clauses tl
+  | Operator (And, Var left, Var right) :: tl ->
+    [left;right] :: cnf_to_clauses tl
   | Var v :: tl -> [v] :: cnf_to_clauses tl
   | Operator (And, l, r) :: tl ->
     let left = cnf_to_clauses l in
