@@ -54,20 +54,20 @@ impl fmt::Display for Node {
     }
 }
 
-fn evaluate(node: Node) -> bool {
+fn evaluate(node: &Node) -> bool {
     match node {
-        Node::Bool(value) => value,
+        Node::Bool(value) => *value,
         Node::Variable(var) => panic!("Variables can't be evaluated"),
         Node::UnaryOp { op, child } => {
-            let child = evaluate(*child);
+            let child = evaluate(child);
             match op {
                 Operator::Not => !child,
                 _ => panic!("Invalid operator"),
             }
         },
         Node::BinaryOp { op, left, right } => {
-            let left = evaluate(*left);
-            let right = evaluate(*right);
+            let left = evaluate(left);
+            let right = evaluate(right);
             match op {
                 Operator::And => left && right,
                 Operator::Or => left || right,
@@ -103,7 +103,7 @@ fn str_to_tree(s: String) -> Node {
                         '&' => Operator::And,
                         '|' => Operator::Or,
                         '^' => Operator::Xor,
-                        'c' => Operator::Cond,
+                        '>' => Operator::Cond,
                         '=' => Operator::Equal,
                         _ => unreachable!(),
                     },
@@ -196,6 +196,29 @@ fn test_gray(n: u32) {
     );
 }
 
+fn test_evaluate() {
+    let ast = str_to_tree("10&".to_string());
+    println!("10& -> {} = {}", ast, evaluate(&ast));
+
+    let ast = str_to_tree("10|".to_string());
+    println!("10| -> {} = {}", ast, evaluate(&ast));
+
+    let ast = str_to_tree("11>".to_string());
+    println!("11> -> {} = {}", ast, evaluate(&ast));
+
+    let ast = str_to_tree("10=".to_string());
+    println!("10= -> {} = {}", ast, evaluate(&ast));
+
+    let ast = str_to_tree("1011||=".to_string());
+    println!("1011|| -> {} = {}", ast, evaluate(&ast));
+
+    let ast = str_to_tree("10&".to_string());
+    println!("10& -> {} = {}", ast, evaluate(&ast));
+
+    let ast = str_to_tree("101|&".to_string());
+    println!("101|& -> {} = {}", ast, evaluate(&ast));
+}
+
 fn main() {
     test_numbers();
     println!("| {:10} | {:32} | {:32} | {:10} |", "decimal", "binary", "gray", "gray code");
@@ -230,9 +253,10 @@ fn main() {
     //     }),
     // };
     // test a bunch of complex boolean formulas, always input rpn without whitespaces
-    println!("{}", str_to_tree("10&".to_string()));
-    println!("{}", str_to_tree("10|".to_string()));
-    println!("{}", str_to_tree("10|1&".to_string()));
-    println!("{}", str_to_tree("101|&".to_string()));
+    // println!("{}", str_to_tree("10&".to_string()));
+    // println!("{}", str_to_tree("10|".to_string()));
+    // println!("{}", str_to_tree("10|1&".to_string()));
+    // println!("{}", str_to_tree("101|&".to_string()));
     
+    test_evaluate();
 }
