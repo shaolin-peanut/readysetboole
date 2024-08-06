@@ -27,20 +27,6 @@ fn main() {
     test_gray(27);
     test_gray(29);
     test_gray(31);
-
-    // let ast = Node::BinaryOp {
-    //     op: Operator::And,
-    //     left: Box::new(Node::Variable('x')),
-    //     right: Box::new(Node::UnaryOp {
-    //         op: Operator::Not,
-    //         child: Box::new(Node::Bool(true)),
-    //     }),
-    // };
-    // test a bunch of complex boolean formulas, always input rpn without whitespaces
-    // println!("{}", str_to_tree("10&".to_string()));
-    // println!("{}", str_to_tree("10|".to_string()));
-    // println!("{}", str_to_tree("10|1&".to_string()));
-    // println!("{}", str_to_tree("101|&".to_string()));
     
     test_evaluate();
     // function like asked in the subject
