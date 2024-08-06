@@ -1,21 +1,121 @@
-struct User {
-    name: String,
-    age: u32,
-    height: u32,
+use std::fmt;
+
+pub enum Operator {
+    Not,
+    And,
+    Or,
+    Xor,
+    Cond,
+    Equal,
 }
 
-fn print_user(user: User) {
-    println!("Name: {}", user.name);
-    println!("Age: {}", user.age);
-    println!("Height: {}", user.height);
+
+pub enum Node {
+    Bool(bool),
+    Variable(char),
+    UnaryOp {
+        op: Operator,
+        child: Box<Node>,
+    },
+    BinaryOp {
+        op: Operator,
+        left: Box<Node>,
+        right: Box<Node>
+    },
 }
 
-fn create_user(name: String, age: u32, height: u32) -> User {
-    User {
-        name,
-        age,
-        height,
+pub enum Status {
+    SAT,
+    UNSAT,
+}
+
+impl fmt::Display for Operator {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let op_str = match self {
+            Operator::Not => "NOT",
+            Operator::And => "AND",
+            Operator::Or => "OR",
+            Operator::Xor => "XOR",
+            Operator::Cond => "=>",
+            Operator::Equal => "==",
+        };
+        write!(f, "{}", op_str)
     }
+}
+
+impl fmt::Display for Node {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            Node::Bool(value) => write!(f, "{}", value),
+            Node::Variable(var) => write!(f, "{}", var),
+            Node::UnaryOp { op, child } => write!(f, "({} {})", op, child),
+            Node::BinaryOp { op, left, right } => write!(f, "({} {} {})", left, op, right),
+        }
+    }
+}
+
+fn evaluate(node: Node) -> bool {
+    match node {
+        Node::Bool(value) => value,
+        Node::Variable(var) => panic!("Variables can't be evaluated"),
+        Node::UnaryOp { op, child } => {
+            let child = evaluate(*child);
+            match op {
+                Operator::Not => !child,
+                _ => panic!("Invalid operator"),
+            }
+        },
+        Node::BinaryOp { op, left, right } => {
+            let left = evaluate(*left);
+            let right = evaluate(*right);
+            match op {
+                Operator::And => left && right,
+                Operator::Or => left || right,
+                Operator::Xor => ((left && (!right)) || ((!left) && right) ),
+                Operator::Cond => if left { right } else { false },
+                Operator::Equal => left == right,
+                _ => panic!("Invalid operator"),
+            }
+        }
+    }
+}
+
+fn str_to_tree(s: String) -> Node {
+    let mut stack: Vec<Node> = Vec::new();
+
+    for c in s.chars() {
+        match c {
+            'a'..='z' => stack.push(Node::Variable(c)),
+            '0' |'1' => stack.push(Node::Bool(c == '1')),
+            '!' => {
+                let child = Box::new(stack.pop().unwrap());
+                stack.push(Node::UnaryOp {
+                    op: Operator::Not,
+                    child,
+                });
+            },
+            '&' | '|' | '^' | '>' | '=' =>{
+                let left = Box::new(stack.pop().unwrap());
+                let right = Box::new(stack.pop().unwrap());
+                stack.push(Node::BinaryOp {
+                    op: match c {
+                        '!' => Operator::Not,
+                        '&' => Operator::And,
+                        '|' => Operator::Or,
+                        '^' => Operator::Xor,
+                        'c' => Operator::Cond,
+                        '=' => Operator::Equal,
+                        _ => unreachable!(),
+                    },
+                    left,
+                    right
+                });
+            },
+            _ => unreachable!(),
+        }
+    }
+    if stack.len() != 1 { panic!("Invalid formula"); }
+    stack.pop().unwrap()
 }
 
 fn print_binary(n: u32) -> String {
@@ -121,6 +221,18 @@ fn main() {
     test_gray(29);
     test_gray(31);
 
-    let user = create_user(String::from("John"), 30, 170); 
-    print_user(user);
+    // let ast = Node::BinaryOp {
+    //     op: Operator::And,
+    //     left: Box::new(Node::Variable('x')),
+    //     right: Box::new(Node::UnaryOp {
+    //         op: Operator::Not,
+    //         child: Box::new(Node::Bool(true)),
+    //     }),
+    // };
+    // test a bunch of complex boolean formulas, always input rpn without whitespaces
+    println!("{}", str_to_tree("10&".to_string()));
+    println!("{}", str_to_tree("10|".to_string()));
+    println!("{}", str_to_tree("10|1&".to_string()));
+    println!("{}", str_to_tree("101|&".to_string()));
+    
 }
