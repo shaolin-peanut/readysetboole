@@ -1,6 +1,7 @@
 pub mod calculate;
 pub mod evaluation;
 pub mod utils;
+pub mod truthtable;
 
 #[derive(Debug)]
 pub enum Operator {
@@ -16,15 +17,21 @@ pub enum Operator {
 pub enum Node {
     Bool(bool),
     Variable(char),
-    UnaryOp {
-        op: Operator,
-        child: Box<Node>,
-    },
+    Negation(Box<Node>),
     BinaryOp {
-        op: Operator,
-        left: Box<Node>,
-        right: Box<Node>
-    },
+            op: Operator,
+            left: Box<Node>,
+            right: Box<Node>
+        },
+    // considering this, but lacking named field might
+    // make logic less easy
+    // BinaryOp(Operator, Box<Node>, Box<Node>),
+}
+
+impl Operator {
+    pub fn new(op: Operator) -> Operator {
+        op
+    }
 }
 
 use std::fmt;
@@ -48,7 +55,7 @@ impl fmt::Display for Node {
         match self {
             Node::Bool(value) => write!(f, "{}", value),
             Node::Variable(var) => write!(f, "{}", var),
-            Node::UnaryOp { op, child } => write!(f, "({} {})", op, child),
+            Node::Negation(child) => write!(f, "!({})", child),
             Node::BinaryOp { op, left, right } => write!(f, "({} {} {})", left, op, right),
         }
     }

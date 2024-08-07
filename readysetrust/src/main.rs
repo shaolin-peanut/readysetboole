@@ -2,6 +2,7 @@ mod exercises;
 
 use crate::exercises::utils::{test_numbers, test_gray, test_evaluate};
 use crate::exercises::evaluation::evaluate_formula;
+use crate::exercises::truthtable::print_truth_table;
 
 fn main() {
     test_numbers();
@@ -31,4 +32,6 @@ fn main() {
     test_evaluate();
     // function like asked in the subject
     println!("10& -> {}", evaluate_formula("10&"));
+
+    print_truth_table("AB&");
 }

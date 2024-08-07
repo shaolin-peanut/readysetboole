@@ -1,6 +1,6 @@
 use crate::exercises::evaluation::{str_to_tree, evaluate};
 use crate::exercises::calculate::{adder, multiplier, gray};
-use crate::exercises::{Node, Operator};
+use crate::exercises::Node;
 
 pub fn print_binary(n: u32) -> String {
     (0..32)

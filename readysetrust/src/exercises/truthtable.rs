@@ -1,95 +1,64 @@
 use crate::exercises::{Node, Operator};
-use std::collections::HashSet;
+use crate::exercises::evaluation::{evaluate, str_to_tree};
 
-fn generate_permutations(ast: &Node, vars: Vec<char>) -> Vec<HashMap<char, bool>> {
-    let mut permutations = Vec::new();
-    let mut current_perm = vars.iter().map(|v| (*v, false)).collect();
-    
-    generate_permutations_recursive(
-        &mut permutations,
-        &mut current_perm,
-        0,
-        num_vars
-    );
-    
-    permutations
+fn lookup_key(perm: &Vec<(char, bool)>, key: char) -> bool {
+    for (k, v) in perm.iter() {
+        if k == &key {
+            return *v;
+        }
+    }
+    panic!("Invalid key");
 }
 
-// table of alphabetic variable to permutation index matching
-// e.g. a -> 0, b -> 1, c -> 2
-// this is used to turn the permutation into an ast
 
-fn expand_ast(ast: &Node, permutation: &HashMap<char, bool>) -> Node {
+fn expand_ast(ast: &Node, perm: &Vec<(char, bool)>) -> Node {
     match ast {
-        Node::Variable(v) => Node::Bool(permutation[v]),
-        Node::UnaryOp { child, .. } => Node::UnaryOp {
-            child: Box::new(expand_ast(child, permutation)),
-            ..ast.clone()
-        },
-        Node::BinaryOp { left, right, .. } => {
+        Node::Variable(v) => Node::Bool(lookup_key(perm, *v)),
+        Node::Negation(child) => Node::Negation(Box::new(expand_ast(child, perm))),
+        Node::BinaryOp { op, left, right } => {
             Node::BinaryOp {
-                left: Box::new(expand_ast(left, permutation)),
-                right: Box::new(expand_ast(right, permutation)),
-                ..ast.clone()
+                op: match op {
+                    Operator::Not => Operator::Not,
+                    Operator::And => Operator::And,
+                    Operator::Or => Operator::Or,
+                    Operator::Xor => Operator::Xor,
+                    Operator::Cond => Operator::Cond,
+                    Operator::Equal => Operator::Equal,
+                },
+                left: Box::new(expand_ast(left, perm)),
+                right: Box::new(expand_ast(right, perm)),
             }
         },
         _ => panic!("Invalid ast"),
     }
 }
 
-fn generate_permutations_recursive(permutations: &mut Vec<HashMap<char, bool>>, current_perm: &mut HashMap<char, bool>, index: usize, num_vars: usize) {
-    if index == num_vars {
+fn generate_permutations_recursive(permutations: &mut Vec<Vec<(char, bool)>>, current_perm: &mut Vec<(char, bool)>, index: usize, vars: &Vec<char>) {
+    if index == vars.len() {
         permutations.push(current_perm.clone());
         return;
     }
-
-    // Try both true and false for the current variable
-    current_perm.insert(vars[index], false);
-    generate_permutations_recursive(permutations, current_perm, index + 1, num_vars);
-    current_perm.insert(vars[index], true);
-    generate_permutations_recursive(permutations, current_perm, index + 1, num_vars);
-)
-
-// fn generate_permutations_recursive(
-//     permutations: &mut Vec<Vec<bool>>,
-//     current_perm: &mut Vec<bool>,
-//     index: usize,
-//     num_vars: usize,
-// ) {
-//     if index == num_vars {
-//         // as we have all permutations, we should turn this into an ast with variables replaced
-//         permutations.push(current_perm.clone());
-//         return;
-//     }
     
-//     // Try both true and false for the current variable
-//     current_perm[index] = false;
-//     generate_permutations_recursive(permutations, current_perm, index + 1, num_vars);
-//     current_perm[index] = true;
-//     generate_permutations_recursive(permutations, current_perm, index + 1, num_vars);
-// }
-
-fn main() {
-    let permutations = generate_permutations(3);
-    for perm in permutations {
-        println!("{:?}", perm);
-    }
+    current_perm.push((vars[index], false));
+    generate_permutations_recursive(permutations, current_perm, index + 1, vars);
+    current_perm.push((vars[index], true));
+    generate_permutations_recursive(permutations, current_perm, index + 1, vars);
 }
 
-fn generate_permutations(n: usize) -> Vec<Vec<bool>> {
-    match n {
-        0 => vec![vec![]],
-        _ => {
-            let tail = generate_permutations(n - 1);
-            tail.into_iter().map(|l| vec![true, false]).chain(tail).collect()
-        }
-    }
+fn generate_permutations(vars: &Vec<char>) -> Vec<Vec<(char, bool)>> {
+    let mut permutations: Vec<Vec<(char, bool)>> = Vec::new();
+    let mut current_perm = vars.iter().map(
+        |v| (*v, false)
+    ).collect();
+    
+    generate_permutations_recursive(&mut permutations, &mut current_perm,0, vars);
+    permutations
 }
 
 fn get_variables(ast: &Node) -> Vec<char> {
     match ast {
         Node::Variable(v) => vec![*v],
-        Node::UnaryOp { child, .. } => get_variables(child),
+        Node::Negation(child) => get_variables(child),
         Node::BinaryOp { left, right, .. } => {
             let mut all = get_variables(left);
             all.extend(get_variables(right));
@@ -98,8 +67,33 @@ fn get_variables(ast: &Node) -> Vec<char> {
         _ => vec![],
     }
 }
+
+fn printing(ast: Node,  permutations: Vec<Vec<(char, bool)>>, vars: Vec<char>) {
+    // header
+    for var in vars.iter() { print!("{}  |", var);}
+    println!(" output");
+    // body
+    for perm in permutations.iter() {
+        for (_, v) in perm.iter() {
+            print!("{}  |", v);
+        }
+        let ast = expand_ast(&ast, perm);
+        println!("  {}", evaluate(&ast));
+    }
+}
+
+// permutations look like this, it's an array of array of tuples
+// I could have used a hashmap but this is simpler
+// [(a, false), (b, true), (c, false)]
+// [(a, false), (b, false), (c, true)]
+// [(a, true), (b, false), (c, false)]
+// [(a, true), (b, true), (c, false)]
+
 pub fn print_truth_table(formula: &str) {
     let ast = str_to_tree(formula.to_string());
-    let vars: Vec<char> = get_variables(&ast);
-    let permutations = generate_permutations(&ast,vars);
+    let vars = get_variables(&ast);
+    println!("{:?}", vars);
+    let permutations: Vec<Vec<(char, bool)>> = generate_permutations(&vars);
+
+    printing(ast, permutations, vars);
 }
