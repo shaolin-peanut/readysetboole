@@ -38,24 +38,6 @@ pub fn str_to_tree(s: String) -> Node {
     stack.pop().unwrap()
 }
 
-fn get_variables(ast: &Node) -> Vec<char> {
-    match ast {
-        Node::Variable(v) => vec![*v],
-        Node::UnaryOp { child, .. } => get_variables(child),
-        Node::BinaryOp { left, right, .. } => {
-            let mut all = get_variables(left);
-            all.extend(get_variables(right));
-            all
-        },
-        _ => vec![],
-    }
-}
-pub fn print_truth_table(formula: &str) {
-    let ast = str_to_tree(formula.to_string());
-    let vars: Vec<char> = get_variables(&ast);
-//     let permutations = generate_permutations(vars.len());
-}
-
 pub fn evaluate(node: &Node) -> bool {
     match node {
         Node::Bool(value) => *value,
