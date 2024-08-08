@@ -3,6 +3,7 @@ mod exercises;
 use crate::exercises::utils::{test_numbers, test_gray, test_evaluate};
 use crate::exercises::evaluation::evaluate_formula;
 use crate::exercises::truthtable::print_truth_table;
+use crate::exercises::nnf::nnf;
 
 fn main() {
     test_numbers();
@@ -35,4 +36,6 @@ fn main() {
 
     print_truth_table("AB&");
     print_truth_table("ABCD||=");
+
+    println!("NNF of AB&: {}", nnf("AB&"));
 }

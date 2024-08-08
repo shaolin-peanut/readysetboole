@@ -2,6 +2,7 @@ pub mod calculate;
 pub mod evaluation;
 pub mod utils;
 pub mod truthtable;
+pub mod nnf;
 
 #[derive(Debug)]
 pub enum Operator {
@@ -40,6 +41,32 @@ impl Operator {
             Operator::Xor => Operator::Xor,
             Operator::Cond => Operator::Cond,
             Operator::Equal => Operator::Equal,
+        }
+    }
+}
+
+impl Node {
+    pub fn clone(&self) -> Node {
+        match self {
+            Node::Bool(value) => Node::Bool(*value),
+            Node::Variable(var) => Node::Variable(*var),
+            Node::Negation(child) => Node::Negation(Box::new(child.clone())),
+            Node::BinaryOp { op, left, right } => Node::BinaryOp {
+                op: op.clone(),
+                left: Box::new((*left).clone()),
+                right: Box::new((*right).clone()),
+            },
+        }
+    }
+
+    pub fn map_children(&self, f: fn(Node) -> Node) -> Node {
+        match self {
+            Node::BinaryOp { op, left, right } => Node::BinaryOp {
+                op: op.clone(),
+                left: Box::new(f((*left).clone())),
+                right: Box::new(f((*right).clone())),
+            },
+            _ => self.clone(),
         }
     }
 }

@@ -8,12 +8,12 @@ pub fn str_to_tree(s: String) -> Node {
             'A'..='Z' => stack.push(Node::Variable(c)),
             '0' |'1' => stack.push(Node::Bool(c == '1')),
             '!' => {
-                let child = Box::new(stack.pop().unwrap());
+                let child: Box<Node> = Box::new(stack.pop().unwrap());
                 stack.push(Node::Negation(child));
             },
             '&' | '|' | '^' | '>' | '=' =>{
-                let left = Box::new(stack.pop().unwrap());
-                let right = Box::new(stack.pop().unwrap());
+                let left: Box<Node> = Box::new(stack.pop().unwrap());
+                let right: Box<Node> = Box::new(stack.pop().unwrap());
                 stack.push(Node::BinaryOp {
                     op: match c {
                         '!' => Operator::Not,
