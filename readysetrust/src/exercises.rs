@@ -32,6 +32,16 @@ impl Operator {
     pub fn new(op: Operator) -> Operator {
         op
     }
+    pub fn clone(&self) -> Operator {
+        match self {
+            Operator::Not => Operator::Not,
+            Operator::And => Operator::And,
+            Operator::Or => Operator::Or,
+            Operator::Xor => Operator::Xor,
+            Operator::Cond => Operator::Cond,
+            Operator::Equal => Operator::Equal,
+        }
+    }
 }
 
 use std::fmt;

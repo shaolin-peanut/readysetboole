@@ -34,4 +34,5 @@ fn main() {
     println!("10& -> {}", evaluate_formula("10&"));
 
     print_truth_table("AB&");
+    print_truth_table("ABCD||=");
 }
