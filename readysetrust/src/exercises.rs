@@ -4,7 +4,7 @@ pub mod utils;
 pub mod truthtable;
 pub mod nnf;
 
-#[derive(Debug)]
+#[derive(PartialEq,Clone, Debug)]
 pub enum Operator {
     Not,
     And,
@@ -14,7 +14,7 @@ pub enum Operator {
     Equal,
 }
 
-#[derive(Debug)]
+#[derive(PartialEq, Clone,Debug)]
 pub enum Node {
     Bool(bool),
     Variable(char),
@@ -24,47 +24,30 @@ pub enum Node {
             left: Box<Node>,
             right: Box<Node>
         },
-    // considering this, but lacking named field might
-    // make logic less easy
-    // BinaryOp(Operator, Box<Node>, Box<Node>),
-}
-
-impl Operator {
-    pub fn new(op: Operator) -> Operator {
-        op
-    }
-    pub fn clone(&self) -> Operator {
-        match self {
-            Operator::Not => Operator::Not,
-            Operator::And => Operator::And,
-            Operator::Or => Operator::Or,
-            Operator::Xor => Operator::Xor,
-            Operator::Cond => Operator::Cond,
-            Operator::Equal => Operator::Equal,
-        }
-    }
 }
 
 impl Node {
-    pub fn clone(&self) -> Node {
+    // pub fn clone(&self) -> Node {
+    //     match self {
+    //         Node::Bool(value) => Node::Bool(*value),
+    //         Node::Variable(var) => Node::Variable(*var),
+    //         Node::Negation(child) => Node::Negation(Box::new(child.clone())),
+    //         Node::BinaryOp { op, left, right } => Node::BinaryOp {
+    //             op: op.clone(),
+    //             left: Box::new((*left).clone()),
+    //             right: Box::new((*right).clone()),
+    //         },
+    //     }
+    // }
+    pub fn map_children<F>(&self, f: F) -> Node
+    where
+        F: Fn(Node) -> Node,
+    {
         match self {
-            Node::Bool(value) => Node::Bool(*value),
-            Node::Variable(var) => Node::Variable(*var),
-            Node::Negation(child) => Node::Negation(Box::new(child.clone())),
             Node::BinaryOp { op, left, right } => Node::BinaryOp {
                 op: op.clone(),
-                left: Box::new((*left).clone()),
-                right: Box::new((*right).clone()),
-            },
-        }
-    }
-
-    pub fn map_children(&self, f: fn(Node) -> Node) -> Node {
-        match self {
-            Node::BinaryOp { op, left, right } => Node::BinaryOp {
-                op: op.clone(),
-                left: Box::new(f((*left).clone())),
-                right: Box::new(f((*right).clone())),
+                left: Box::new(f(*(*left).clone())),
+                right: Box::new(f(*(*right).clone())),
             },
             _ => self.clone(),
         }

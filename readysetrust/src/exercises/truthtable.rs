@@ -1,4 +1,4 @@
-use crate::exercises::{Node, Operator};
+use crate::exercises::Node;
 use crate::exercises::evaluation::{evaluate, str_to_tree};
 
 // TODO: rewrite all functions below without mutable structures
